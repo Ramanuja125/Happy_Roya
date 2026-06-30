@@ -82,6 +82,7 @@
 
       try {
         await loginUser(email, pwd);
+        sessionStorage.setItem("navigating", "1");
         window.location.href = "verify.html";
       } catch (err) {
         console.error("Login error:", err.code, err.message);

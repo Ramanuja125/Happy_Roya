@@ -230,6 +230,10 @@ function checkOtpComplete(inputs) {
 // Clears it automatically when the last tab closes.
 // ─────────────────────────────────────────────
 (function initTabSession() {
+  // We have arrived at this page — clear the navigation flag set by the
+  // previous page's redirect so beforeunload works correctly from here on.
+  sessionStorage.removeItem("navigating");
+
   // Reuse existing tab_id if navigating within the same tab.
   // sessionStorage persists across page navigations but clears on tab close —
   // so a new tabId is only created when a genuinely new tab opens.
@@ -246,8 +250,12 @@ function checkOtpComplete(inputs) {
     localStorage.setItem("open_tabs", JSON.stringify(tabs));
   }
 
-  // Deregister on close — if last tab, wipe the session
+  // Deregister on close — if last tab, wipe the session.
+  // Skip cleanup entirely if this unload is just an internal page navigation
+  // (the redirect code sets sessionStorage "navigating" = "1" before changing href).
   window.addEventListener("beforeunload", function () {
+    if (sessionStorage.getItem("navigating")) return;
+
     let remaining = JSON.parse(localStorage.getItem("open_tabs") || "[]")
       .filter(function (id) { return id !== tabId; });
     if (remaining.length === 0) {

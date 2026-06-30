@@ -55,11 +55,15 @@
       const result = verifyOTP(code);
 
       if (result.valid) {
+        sessionStorage.setItem("navigating", "1");
         window.location.href = "dashboard.html";
       } else {
         showAlert("alert-error", result.message);
         if (result.message.includes("expired") || result.message.includes("Session")) {
-          setTimeout(() => window.location.href = "index.html", 2000);
+          setTimeout(() => {
+            sessionStorage.setItem("navigating", "1");
+            window.location.href = "index.html";
+          }, 2000);
         }
       }
     });
