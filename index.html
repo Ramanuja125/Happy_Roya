@@ -54,6 +54,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="auth.js"></script>
   <script>
+    // If already logged in, go straight to the dashboard
+    if (getSessionUser()) {
+      sessionStorage.setItem("navigating", "1");
+      window.location.href = "dashboard.html";
+    }
+
     const emailEl = document.getElementById("email");
     const pwdEl   = document.getElementById("password");
 
